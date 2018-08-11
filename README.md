@@ -1,4 +1,4 @@
-QL# Graphicl
+GraphQLGraphQLQuery.QL# Graphicl
 
 GraphQL query builder for java.
 
@@ -16,11 +16,12 @@ GraphQL query builder for java.
 ```
 
 ```java
-Query.create()
+GraphQLQuery.create()
   .object(
     GraphQLObject.create("hero")
             .field(GraphQLScalar.create("name"))
-            .field(GraphQLScalar.create("appearsIn")));
+            .field(GraphQLScalar.create("appearsIn")))
+  .build();
 ```
 
 ```graphql
@@ -36,12 +37,13 @@ Query.create()
 ```
 
 ```java
-Query.create()
+GraphQLQuery.create()
   .object(
     GraphQLObject.create("hero")
             .field(GraphQLScalar.create("name"))
             .field(GraphQLObject.create("friends")
-                            .filed(GraphQLScalar.create("name"))));
+                            .filed(GraphQLScalar.create("name"))))
+  .build();
 ```
 
 ### Arguments
@@ -56,11 +58,12 @@ Query.create()
 ```
 
 ```java
-Query.create()
+GraphQLQuery.create()
   .object(
     GraphQLObject.create("human").arg("id", "1000")
             .field(GraphQLScalar.create("name"))
-            .field(GraphQLScalar.create("height")));
+            .field(GraphQLScalar.create("height")))
+  .build();
 ```
 
 ```graphql
@@ -77,11 +80,12 @@ enum Unit {
     FOOT
 }
 
-Query.create()
+GraphQLQuery.create()
   .object(
     GraphQLObject.create("human").arg("id", "1000")
             .field(GraphQLScalar.create("name"))
-            .field(GraphQLScalar.create("height").arg("unit", Unit.FOOT)));
+            .field(GraphQLScalar.create("height").arg("unit", Unit.FOOT)))
+  .build();
 ```
 
 ### Aliases
@@ -102,13 +106,14 @@ enum Episode {
     EMPIRE, JEDI
 }
 
-Query.create()
+GraphQLQuery.create()
   .object(
     GraphQLObject.create("hero").alias("empireHero").arg("episode", Episode.EMPIRE)
             .field(GraphQLScalar.create("name")))
   .object(
     GraphQLObject.create("hero").alias("jediHero").arg("episode", Episode.JEDI)
-            .field(GraphQLScalar.create("name")));
+            .field(GraphQLScalar.create("name")))
+  .build();            
 ```
 
 ### Fragments
@@ -137,7 +142,7 @@ enum Episode {
     EMPIRE, JEDI
 }
 
-Query.create()
+GraphQLQuery.create()
   .object(
     GraphQLObject.create("hero").alias("empireHero").arg("episode", Episode.EMPIRE)
             .fragment("comparisonFields")
@@ -149,7 +154,8 @@ Query.create()
               .field(GraphQLScalar.create("name")))
               .field(GraphQLScalar.create("appearsIn"))))
               .field(GraphQLObject.create("friends")
-                              .filed(GraphQLScalar.create("name"))));
+                              .filed(GraphQLScalar.create("name"))))
+  .build();
 ```
 
 ### Operation name
@@ -171,7 +177,8 @@ Query.create("HeroNameAndFriends")
     GraphQLObject.create("hero")
             .field(GraphQLScalar.create("name"))
             .field(GraphQLObject.create("friends")
-                            .filed(GraphQLScalar.create("name"))));
+                            .filed(GraphQLScalar.create("name"))))
+  .build();                            
 ```
 
 ### Variables
@@ -192,13 +199,14 @@ query HeroNameAndFriends($episode: Episode) {
 ```
 
 ```java
-Query.create("HeroNameAndFriends")
+GraphQLQuery.create("HeroNameAndFriends")
   .var("$episode", "Episode")
   .object(
     GraphQLObject.create("hero").arg("episode", "$episode")
             .field(GraphQLScalar.create("name"))
             .field(GraphQLObject.create("friends")
-                            .filed(GraphQLScalar.create("name"))));
+                            .filed(GraphQLScalar.create("name"))))
+  .build();                            
 
 Map variables = new HashMap<String, Object>();
 variables.put("episode", "JEDI")
@@ -218,13 +226,14 @@ query HeroNameAndFriends($episode: Episode = JEDI) {
 ```
 
 ```java
-Query.create("HeroNameAndFriends")
+GraphQLQuery.create("HeroNameAndFriends")
   .var("$episode", "Episode", Episode.JEDI)
   .object(
     GraphQLObject.create("hero").arg("episode", "$episode")
             .field(GraphQLScalar.create("name"))
             .field(GraphQLObject.create("friends")
-                            .filed(GraphQLScalar.create("name"))));
+                            .filed(GraphQLScalar.create("name"))))
+  .build();                            
 ```
 
 ### Directives
@@ -241,7 +250,7 @@ query Hero($episode: Episode, $withFriends: Boolean!) {
 ```
 
 ```java
-Query.create("Hero")
+GraphQLQuery.create("Hero")
   .var("$episode", "Episode")
   .var("$withFriends", "Boolean!")
   .object(
@@ -249,7 +258,8 @@ Query.create("Hero")
             .field(GraphQLScalar.create("name"))
             .field(GraphQLObject.create("friends")
                             .include("$withFriends") // .skip("$withFriends")
-                            .filed(GraphQLScalar.create("name"))));
+                            .filed(GraphQLScalar.create("name"))))
+  .build();                            
 ```
 
 ### Mutations
@@ -264,13 +274,14 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
 ```
 
 ```java
-Mutation.create("CreateReviewForEpisode")
+GraphQLMutation.create("CreateReviewForEpisode")
   .var("$ep", "Episode!")
   .var("$review", "ReviewInput!")
   .object(
     GraphQLObject.create("createReview").arg("episode", "$episode").arg("review", "$review")
       .filed(GraphQLScalar.create("stars"))
-      .filed(GraphQLScalar.create("commentary")));
+      .filed(GraphQLScalar.create("commentary")))
+  .build();      
 ```
 
 ### Inline Fragments
@@ -290,7 +301,7 @@ query HeroForEpisode($ep: Episode!) {
 ```
 
 ```java
-Query.create("HeroForEpisode")
+GraphQLQuery.create("HeroForEpisode")
   .var("$ep", "Episode!")
   .object(
     GraphQLObject.create("hero").arg("episode", "$ep")
@@ -300,5 +311,6 @@ Query.create("HeroForEpisode")
           .field(GraphQLScalar.create("primaryFunction"))))
       .fragment(
         GraphQLFragment.create().on("Human")
-          .field(GraphQLScalar.create("height")))));
+          .field(GraphQLScalar.create("height")))))
+  .build();          
 ```
