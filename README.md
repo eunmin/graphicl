@@ -1,6 +1,4 @@
-GraphQLGraphQLQuery.QL# Graphicl
-
-GraphQL query builder for java.
+# Graphicl
 
 ## Example
 
