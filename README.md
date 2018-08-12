@@ -22,6 +22,17 @@ GraphQLQuery.create()
   .build();
 ```
 
+```java
+@GraphQLQuery("hero")
+class Query {
+  @GraphQLField
+  String name;
+
+  @GraphQLField
+  List<Episode> appearsIn;
+}
+```
+
 ```graphql
 {
   hero {
@@ -44,6 +55,23 @@ GraphQLQuery.create()
   .build();
 ```
 
+```java
+@GraphQLQuery("hero")
+class Query {
+  @GraphQLField
+  String name;
+
+  @GraphQLField
+  List<Friend> friends;
+}
+
+@GraphqQLObject
+class Friend {
+  @GraphQLField
+  String name;
+}
+```
+
 ### Arguments
 
 ```graphql
@@ -63,6 +91,18 @@ GraphQLQuery.create()
       .field(GraphQLScalar.create("height")))
   .build();
 ```
+
+```java
+@GraphQLQuery(name = "human", args = {"id", "1000"})
+class Query {
+  @GraphQLField
+  String name;
+
+  @GraphQLField
+  Int height;
+}
+```
+
 
 ```graphql
 {
@@ -85,6 +125,18 @@ GraphQLQuery.create()
       .field(GraphQLScalar.create("height").arg("unit", Unit.FOOT)))
   .build();
 ```
+
+```java
+@GraphQLQuery(name = "human", args = {"id", "1000"})
+class Query {
+  @GraphQLField
+  String name;
+
+  @GraphQLField(args = {"unit", FOOT})
+  Int height;
+}
+```
+
 
 ### Aliases
 
