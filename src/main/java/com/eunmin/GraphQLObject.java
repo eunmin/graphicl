@@ -31,6 +31,16 @@ public class GraphQLObject extends GraphQLField {
         return this;
     }
 
+    public GraphQLObject include(GraphQLVar var) {
+        addInclude(var);
+        return this;
+    }
+
+    public GraphQLObject skip(GraphQLVar var) {
+        addSkip(var);
+        return this;
+    }
+
     @Override
     public String build() {
         StringJoiner sj = new StringJoiner(" ");

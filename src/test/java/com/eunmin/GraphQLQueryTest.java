@@ -80,6 +80,7 @@ public class GraphQLQueryTest {
                                 .field(GraphQLFragmentSpread.create("comparisonFields")))
                         .build());
     }
+
     @Test
     public void testFragment() {
         Assert.assertEquals(
@@ -88,7 +89,88 @@ public class GraphQLQueryTest {
                         .field(GraphQLScalar.create("name"))
                         .field(GraphQLScalar.create("appearsIn"))
                         .field(GraphQLObject.create("friends")
-                                    .field(GraphQLScalar.create("name")))
+                                .field(GraphQLScalar.create("name")))
+                        .build());
+    }
+
+    @Test
+    public void testOperationName() {
+        Assert.assertEquals(
+                "query HeroNameAndFriends { hero { name friends { name } } }",
+                GraphQLQuery.create("HeroNameAndFriends")
+                        .object(GraphQLObject.create("hero")
+                                .field(GraphQLScalar.create("name"))
+                                .field(GraphQLObject.create("friends")
+                                        .field(GraphQLScalar.create("name"))))
+                        .build());
+    }
+
+    @Test
+    public void testVariables() {
+        Assert.assertEquals(
+                "query HeroNameAndFriends($episode: Episode) { hero(episode: $episode) { name friends { name } } }",
+                GraphQLQuery.create("HeroNameAndFriends")
+                        .var(GraphQLVar.create("episode").type("Episode"))
+                        .object(GraphQLObject.create("hero").arg("episode", GraphQLVar.create("episode"))
+                                .field(GraphQLScalar.create("name"))
+                                .field(GraphQLObject.create("friends")
+                                        .field(GraphQLScalar.create("name"))))
+                        .build());
+    }
+
+    @Test
+    public void testVariablesDefaultValue() {
+        Assert.assertEquals(
+                "query HeroNameAndFriends($episode: Episode = JEDI) { hero(episode: $episode) { name friends { name } } }",
+                GraphQLQuery.create("HeroNameAndFriends")
+                        .var(GraphQLVar.create("episode").type("Episode").defaultValue(Episode.JEDI))
+                        .object(GraphQLObject.create("hero").arg("episode", GraphQLVar.create("episode"))
+                                .field(GraphQLScalar.create("name"))
+                                .field(GraphQLObject.create("friends")
+                                        .field(GraphQLScalar.create("name"))))
+                        .build());
+    }
+
+    @Test
+    public void testIncludeDirectives() {
+        Assert.assertEquals(
+                "query Hero($episode: Episode, $withFriends: Boolean!) { hero(episode: $episode) { name friends @include(if: $withFriends) { name } } }",
+                GraphQLQuery.create("Hero")
+                        .var(GraphQLVar.create("episode").type("Episode"))
+                        .var(GraphQLVar.create("withFriends").type("Boolean!"))
+                        .object(GraphQLObject.create("hero").arg("episode", GraphQLVar.create("episode"))
+                                .field(GraphQLScalar.create("name"))
+                                .field(GraphQLObject.create("friends")
+                                        .include(GraphQLVar.create("withFriends"))
+                                        .field(GraphQLScalar.create("name"))))
+                        .build());
+    }
+
+    @Test
+    public void testSkipDirectives() {
+        Assert.assertEquals(
+                "query Hero($episode: Episode, $withFriends: Boolean!) { hero(episode: $episode) { name friends @skip(if: $withFriends) { name } } }",
+                GraphQLQuery.create("Hero")
+                        .var(GraphQLVar.create("episode").type("Episode"))
+                        .var(GraphQLVar.create("withFriends").type("Boolean!"))
+                        .object(GraphQLObject.create("hero").arg("episode", GraphQLVar.create("episode"))
+                                .field(GraphQLScalar.create("name"))
+                                .field(GraphQLObject.create("friends")
+                                        .skip(GraphQLVar.create("withFriends"))
+                                        .field(GraphQLScalar.create("name"))))
+                        .build());
+    }
+
+    @Test
+    public void testMutation() {
+        Assert.assertEquals(
+                "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) { createReview(episode: $ep, review: $review) { stars commentary } }",
+                GraphQLQuery.create("CreateReviewForEpisode").mutation()
+                        .var(GraphQLVar.create("ep").type("Episode!"))
+                        .var(GraphQLVar.create("review").type("ReviewInput!"))
+                        .object(GraphQLObject.create("createReview").arg("episode", GraphQLVar.create("ep")).arg("review", GraphQLVar.create("review"))
+                                .field(GraphQLScalar.create("stars"))
+                                .field(GraphQLScalar.create("commentary")))
                         .build());
     }
 }
