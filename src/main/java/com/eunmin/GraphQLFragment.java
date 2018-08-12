@@ -29,7 +29,13 @@ public class GraphQLFragment {
 
     public String build() {
         StringJoiner sj = new StringJoiner(" ");
-        sj.add("fragment " + name + " on " + type);
+        String def;
+        if (name != null) {
+            def = "fragment " + name + " on " + type;
+        } else {
+            def = "... on " + type;
+        }
+        sj.add(def);
         sj.add("{");
         for (GraphQLField field : fields) {
             sj.add(field.build());

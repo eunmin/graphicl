@@ -295,5 +295,13 @@ query HeroForEpisode($ep: Episode!) {
 ```
 
 ```java
-
+GraphQLQuery.create("HeroForEpisode")
+    .var(GraphQLVar.create("ep").type("Episode!"))
+    .object(GraphQLObject.create("hero").arg("episode", GraphQLVar.create("ep"))
+      .field(GraphQLScalar.create("name"))
+      .field(GraphQLInlineFragment.create().on("Droid")
+        .field(GraphQLScalar.create("primaryFunction")))
+      .field(GraphQLInlineFragment.create().on("Human")
+        .field(GraphQLScalar.create("height"))))
+    .build());
 ```
