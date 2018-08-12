@@ -143,17 +143,18 @@ enum Episode {
 GraphQLQuery.create()
   .object(
     GraphQLObject.create("hero").alias("empireHero").arg("episode", Episode.EMPIRE)
-            .fragment("comparisonFields")
+            .field(GraphQLFragmentSpread.create("comparisonFields"))
   .object(
     GraphQLObject.create("hero").alias("jediHero").arg("episode", Episode.JEDI)
-            .fragment("comparisonFields")
-  .fragment(
-    GraphQLFragment.create("comparisonFields").on("Character")
-              .field(GraphQLScalar.create("name")))
-              .field(GraphQLScalar.create("appearsIn"))))
-              .field(GraphQLObject.create("friends")
-                              .filed(GraphQLScalar.create("name"))))
+            .field(GraphQLFragmentSpread.craete("comparisonFields"))
   .build();
+
+GraphQLFragment.create("comparisonFields").on("Character")
+          .field(GraphQLScalar.create("name")))
+          .field(GraphQLScalar.create("appearsIn"))))
+          .field(GraphQLObject.create("friends")
+                          .field(GraphQLScalar.create("name"))))
+          .build();
 ```
 
 ### Operation name

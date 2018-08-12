@@ -68,4 +68,27 @@ public class GraphQLQueryTest {
                                 .field(GraphQLScalar.create("name")))
                         .build());
     }
+
+    @Test
+    public void testFragmentSpreads() {
+        Assert.assertEquals(
+                "query { leftComparison: hero(episode: EMPIRE) { ...comparisonFields } rightComparison: hero(episode: JEDI) { ...comparisonFields } }",
+                GraphQLQuery.create()
+                        .object(GraphQLObject.create("hero").alias("leftComparison").arg("episode", Episode.EMPIRE)
+                                .field(GraphQLFragmentSpread.create("comparisonFields")))
+                        .object(GraphQLObject.create("hero").alias("rightComparison").arg("episode", Episode.JEDI)
+                                .field(GraphQLFragmentSpread.create("comparisonFields")))
+                        .build());
+    }
+    @Test
+    public void testFragment() {
+        Assert.assertEquals(
+                "fragment comparisonFields on Character { name appearsIn friends { name } }",
+                GraphQLFragment.create("comparisonFields").on("Character")
+                        .field(GraphQLScalar.create("name"))
+                        .field(GraphQLScalar.create("appearsIn"))
+                        .field(GraphQLObject.create("friends")
+                                    .field(GraphQLScalar.create("name")))
+                        .build());
+    }
 }
