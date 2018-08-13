@@ -23,11 +23,16 @@ GraphQLQuery.create()
 ```
 
 ```java
-@GraphQLQuery("hero")
-class Query {
+@GraphQL
+interface Query {
+  @GraphQLQuery
+  Character hero();
+}
+
+@GraphQLObject
+class Character {
   @GraphQLField
   String name;
-
   @GraphQLField
   List<Episode> appearsIn;
 }
@@ -56,19 +61,18 @@ GraphQLQuery.create()
 ```
 
 ```java
-@GraphQLQuery("hero")
-class Query {
-  @GraphQLField
-  String name;
-
-  @GraphQLField
-  List<Friend> friends;
+@GraphQL
+interface Query {
+  @GraphQLQuery
+  Character hero();
 }
 
-@GraphqQLObject
-class Friend {
+@GraphQLObject
+class Character {
   @GraphQLField
   String name;
+  @GraphQLField
+  List<Friend> friends;
 }
 ```
 
@@ -93,13 +97,18 @@ GraphQLQuery.create()
 ```
 
 ```java
-@GraphQLQuery(name = "human", args = {"id", "1000"})
-class Query {
+@GraphQL
+interface Query {
+  @GraphQLQuery(name = "human", args = {"id", "1000"})
+  Character hero();
+}
+
+@GraphQLObject
+class Character {
   @GraphQLField
   String name;
-
   @GraphQLField
-  Int height;
+  Integer height;
 }
 ```
 
@@ -127,13 +136,18 @@ GraphQLQuery.create()
 ```
 
 ```java
-@GraphQLQuery(name = "human", args = {"id", "1000"})
-class Query {
+@GraphQL
+interface Query {
+  @GraphQLQuery(name = "human", args = {"id", "1000"})
+  Character hero();
+}
+
+@GraphQLObject
+class Character {
   @GraphQLField
   String name;
-
   @GraphQLField(args = {"unit", FOOT})
-  Int height;
+  Integer height;
 }
 ```
 
@@ -164,6 +178,10 @@ GraphQLQuery.create()
     GraphQLObject.create("hero").alias("jediHero").arg("episode", Episode.JEDI)
       .field(GraphQLScalar.create("name")))
   .build();            
+```
+
+```java
+
 ```
 
 ### Fragments
