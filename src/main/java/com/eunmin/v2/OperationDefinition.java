@@ -66,4 +66,49 @@ public class OperationDefinition {
         sj.add(selectionSet.toString());
         return sj.toString();
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private OperationType type;
+        private String name;
+        private VariableDefinitions vars;
+        private Directives directives;
+        private SelectionSet selectionSet = new SelectionSet();
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder type(OperationType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder var(VariableDefinition var) {
+            if (vars == null) {
+                vars = new VariableDefinitions();
+            }
+            vars.add(var);
+            return this;
+        }
+
+        public Builder select(Selection selection) {
+            selectionSet.add(selection);
+            return this;
+        }
+
+        public OperationDefinition build() {
+            OperationDefinition operationDefinition = new OperationDefinition();
+            operationDefinition.setType(type);
+            operationDefinition.setName(name);
+            operationDefinition.setVars(vars);
+            operationDefinition.setDirectives(directives);
+            operationDefinition.setSelectionSet(selectionSet);
+            return operationDefinition;
+        }
+    }
 }

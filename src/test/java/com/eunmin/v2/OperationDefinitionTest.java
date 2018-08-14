@@ -1,7 +1,5 @@
 package com.eunmin.v2;
 
-import com.eunmin.*;
-import com.eunmin.v2.builder.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,11 +16,12 @@ public class OperationDefinitionTest {
     public void testFields() {
         Assert.assertEquals(
                 "query { hero { name appearsIn } }",
-                OperationDefinitionBuilder.create()
+                OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("appearsIn").build())
+                        .select(Field.builder()
+                                .name("hero")
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("appearsIn").build())
                                 .build())
                         .build().toString());
     }
@@ -31,12 +30,12 @@ public class OperationDefinitionTest {
     public void testObjectField() {
         Assert.assertEquals(
                 "query { hero { name friends { name } } }",
-                OperationDefinitionBuilder.create()
+                OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("friends")
-                                        .select(FieldBuilder.create("name").build())
+                        .select(Field.builder().name("hero")
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("friends")
+                                        .select(Field.builder().name("name").build())
                                         .build())
                                 .build())
                         .build().toString());
@@ -46,12 +45,12 @@ public class OperationDefinitionTest {
     public void testArguments() {
         Assert.assertEquals(
                 "query { human (id: \"1000\") { name height } }",
-                OperationDefinitionBuilder.create()
+                OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("human")
+                        .select(Field.builder().name("human")
                                 .arg("id", "1000")
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("height").build())
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("height").build())
                                 .build())
                         .build().toString());
     }
@@ -60,12 +59,12 @@ public class OperationDefinitionTest {
     public void testScalarArguments() {
         Assert.assertEquals(
                 "query { human (id: \"1000\") { name height (unit: FOOT) } }",
-                OperationDefinitionBuilder.create()
+                OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("human")
+                        .select(Field.builder().name("human")
                                 .arg("id", "1000")
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("height")
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("height")
                                         .arg("unit", Unit.FOOT)
                                         .build())
                                 .build())
@@ -76,17 +75,17 @@ public class OperationDefinitionTest {
     public void testAliases() {
         Assert.assertEquals(
                 "query { empireHero: hero (episode: EMPIRE) { name } jediHero: hero (episode: JEDI) { name } }",
-                OperationDefinitionBuilder.create()
+                OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .alias("empireHero")
                                 .arg("episode", Episode.EMPIRE)
-                                .select(FieldBuilder.create("name").build())
+                                .select(Field.builder().name("name").build())
                                 .build())
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .alias("jediHero")
                                 .arg("episode", Episode.JEDI)
-                                .select(FieldBuilder.create("name").build())
+                                .select(Field.builder().name("name").build())
                                 .build())
                         .build().toString());
     }
@@ -95,17 +94,17 @@ public class OperationDefinitionTest {
     public void testFragmentSpreads() {
         Assert.assertEquals(
                 "query { leftComparison: hero (episode: EMPIRE) { ... comparisonFields } rightComparison: hero (episode: JEDI) { ... comparisonFields } }",
-                OperationDefinitionBuilder.create()
+                OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .alias("leftComparison")
                                 .arg("episode", Episode.EMPIRE)
-                                .select(FragmentSpreadBuilder.create("comparisonFields").build())
+                                .select(FragmentSpread.builder().name("comparisonFields").build())
                                 .build())
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .alias("rightComparison")
                                 .arg("episode", Episode.JEDI)
-                                .select(FragmentSpreadBuilder.create("comparisonFields").build())
+                                .select(FragmentSpread.builder().name("comparisonFields").build())
                                 .build())
                         .build().toString());
     }
@@ -114,12 +113,13 @@ public class OperationDefinitionTest {
     public void testFragment() {
         Assert.assertEquals(
                 "fragment comparisonFields on Character { name appearsIn friends { name } }",
-                FragmentDefinitionBuilder.create("comparisonFields")
+                FragmentDefinition.builder()
+                        .name("comparisonFields")
                         .on("Character")
-                        .select(FieldBuilder.create("name").build())
-                        .select(FieldBuilder.create("appearsIn").build())
-                        .select(FieldBuilder.create("friends")
-                                .select(FieldBuilder.create("name").build())
+                        .select(Field.builder().name("name").build())
+                        .select(Field.builder().name("appearsIn").build())
+                        .select(Field.builder().name("friends")
+                                .select(Field.builder().name("name").build())
                                 .build())
                         .build().toString());
     }
@@ -128,12 +128,13 @@ public class OperationDefinitionTest {
     public void testOperationName() {
         Assert.assertEquals(
                 "query HeroNameAndFriends { hero { name friends { name } } }",
-                OperationDefinitionBuilder.create("HeroNameAndFriends")
+                OperationDefinition.builder()
+                        .name("HeroNameAndFriends")
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("friends")
-                                        .select(FieldBuilder.create("name").build())
+                        .select(Field.builder().name("hero")
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("friends")
+                                        .select(Field.builder().name("name").build())
                                         .build())
                                 .build())
                         .build().toString());
@@ -143,14 +144,15 @@ public class OperationDefinitionTest {
     public void testVariables() {
         Assert.assertEquals(
                 "query HeroNameAndFriends ($episode: Episode) { hero (episode: $episode) { name friends { name } } }",
-                OperationDefinitionBuilder.create("HeroNameAndFriends")
-                        .var(VariableDefinitionBuilder.create(new VariableName("episode"), "Episode").build())
+                OperationDefinition.builder()
+                        .name("HeroNameAndFriends")
+                        .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .arg("episode", new VariableName("episode"))
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("friends")
-                                        .select(FieldBuilder.create("name").build())
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("friends")
+                                        .select(Field.builder().name("name").build())
                                         .build())
                                 .build())
                         .build().toString());
@@ -160,14 +162,15 @@ public class OperationDefinitionTest {
     public void testVariablesDefaultValue() {
         Assert.assertEquals(
                 "query HeroNameAndFriends ($episode: Episode = JEDI) { hero (episode: $episode) { name friends { name } } }",
-                OperationDefinitionBuilder.create("HeroNameAndFriends")
-                        .var(VariableDefinitionBuilder.create(new VariableName("episode"), "Episode").defaultValue(Episode.JEDI).build())
+                OperationDefinition.builder()
+                        .name("HeroNameAndFriends")
+                        .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").defaultValue(Episode.JEDI).build())
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .arg("episode", new VariableName("episode"))
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("friends")
-                                        .select(FieldBuilder.create("name").build())
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("friends")
+                                        .select(Field.builder().name("name").build())
                                         .build())
                                 .build())
                         .build().toString());
@@ -177,16 +180,17 @@ public class OperationDefinitionTest {
     public void testIncludeDirectives() {
         Assert.assertEquals(
                 "query Hero ($episode: Episode, $withFriends: Boolean!) { hero (episode: $episode) { name friends @include(if: $withFriends) { name } } }",
-                OperationDefinitionBuilder.create("Hero")
-                        .var(VariableDefinitionBuilder.create(new VariableName("episode"), "Episode").build())
-                        .var(VariableDefinitionBuilder.create(new VariableName("withFriends"), "Boolean!").build())
+                OperationDefinition.builder()
+                        .name("Hero")
+                        .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
+                        .var(VariableDefinition.builder().name(new VariableName("withFriends")).type("Boolean!").build())
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .arg("episode", new VariableName("episode"))
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("friends")
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("friends")
                                         .include(new VariableName("withFriends"))
-                                        .select(FieldBuilder.create("name").build())
+                                        .select(Field.builder().name("name").build())
                                         .build())
                                 .build())
                         .build().toString());
@@ -196,16 +200,17 @@ public class OperationDefinitionTest {
     public void testSkipDirectives() {
         Assert.assertEquals(
                 "query Hero ($episode: Episode, $withFriends: Boolean!) { hero (episode: $episode) { name friends @skip(if: $withFriends) { name } } }",
-                OperationDefinitionBuilder.create("Hero")
-                        .var(VariableDefinitionBuilder.create(new VariableName("episode"), "Episode").build())
-                        .var(VariableDefinitionBuilder.create(new VariableName("withFriends"), "Boolean!").build())
+                OperationDefinition.builder()
+                        .name("Hero")
+                        .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
+                        .var(VariableDefinition.builder().name(new VariableName("withFriends")).type("Boolean!").build())
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .arg("episode", new VariableName("episode"))
-                                .select(FieldBuilder.create("name").build())
-                                .select(FieldBuilder.create("friends")
+                                .select(Field.builder().name("name").build())
+                                .select(Field.builder().name("friends")
                                         .skip(new VariableName("withFriends"))
-                                        .select(FieldBuilder.create("name").build())
+                                        .select(Field.builder().name("name").build())
                                         .build())
                                 .build())
                         .build().toString());
@@ -215,15 +220,16 @@ public class OperationDefinitionTest {
     public void testMutation() {
         Assert.assertEquals(
                 "mutation CreateReviewForEpisode ($ep: Episode!, $review: ReviewInput!) { createReview (episode: $ep, review: $review) { stars commentary } }",
-                OperationDefinitionBuilder.create("CreateReviewForEpisode")
-                        .var(VariableDefinitionBuilder.create(new VariableName("ep"), "Episode!").build())
-                        .var(VariableDefinitionBuilder.create(new VariableName("review"), "ReviewInput!").build())
+                OperationDefinition.builder()
+                        .name("CreateReviewForEpisode")
+                        .var(VariableDefinition.builder().name(new VariableName("ep")).type("Episode!").build())
+                        .var(VariableDefinition.builder().name(new VariableName("review")).type("ReviewInput!").build())
                         .type(OperationType.Mutation)
-                        .select(FieldBuilder.create("createReview")
+                        .select(Field.builder().name("createReview")
                                 .arg("episode", new VariableName("ep"))
                                 .arg("review", new VariableName("review"))
-                                .select(FieldBuilder.create("stars").build())
-                                .select(FieldBuilder.create("commentary").build())
+                                .select(Field.builder().name("stars").build())
+                                .select(Field.builder().name("commentary").build())
                                 .build())
                         .build().toString());
     }
@@ -232,17 +238,18 @@ public class OperationDefinitionTest {
     public void testInlineFragment() {
         Assert.assertEquals(
                 "query HeroForEpisode ($ep: Episode!) { hero (episode: $ep) { name ... on Droid { primaryFunction } ... on Human { height } } }",
-                OperationDefinitionBuilder.create("HeroForEpisode")
-                        .var(VariableDefinitionBuilder.create(new VariableName("ep"), "Episode!").build())
+                OperationDefinition.builder()
+                        .name("HeroForEpisode")
+                        .var(VariableDefinition.builder().name(new VariableName("ep")).type("Episode!").build())
                         .type(OperationType.Query)
-                        .select(FieldBuilder.create("hero")
+                        .select(Field.builder().name("hero")
                                 .arg("episode", new VariableName("ep"))
-                                .select(FieldBuilder.create("name").build())
-                                .select(InlineFragmentBuilder.create().on("Droid")
-                                        .select(FieldBuilder.create("primaryFunction").build())
+                                .select(Field.builder().name("name").build())
+                                .select(InlineFragment.builder().on("Droid")
+                                        .select(Field.builder().name("primaryFunction").build())
                                         .build())
-                                .select(InlineFragmentBuilder.create().on("Human")
-                                        .select(FieldBuilder.create("height").build())
+                                .select(InlineFragment.builder().on("Human")
+                                        .select(Field.builder().name("height").build())
                                         .build())
                                 .build())
                         .build().toString());

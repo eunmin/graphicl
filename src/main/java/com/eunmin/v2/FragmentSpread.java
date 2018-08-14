@@ -36,4 +36,44 @@ public class FragmentSpread implements Selection {
         }
         return sj.toString();
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String name;
+        private Directives directives;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder include(Object value) {
+            if (directives == null) {
+                directives = new Directives();
+            }
+            Arguments includeArgs = new Arguments();
+            includeArgs.put("if", value);
+            directives.put("include", includeArgs);
+            return this;
+        }
+
+        public Builder skip(Object value) {
+            if (directives == null) {
+                directives = new Directives();
+            }
+            Arguments skipArgs = new Arguments();
+            skipArgs.put("if", value);
+            directives.put("skip", skipArgs);
+            return this;
+        }
+
+        public FragmentSpread build() {
+            FragmentSpread fs = new FragmentSpread(name);
+            fs.setDirectives(directives);
+            return fs;
+        }
+    }
 }

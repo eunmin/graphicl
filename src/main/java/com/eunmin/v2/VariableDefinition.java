@@ -42,4 +42,35 @@ public class VariableDefinition {
         }
         return s;
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private VariableName name;
+        private String type;
+        private Object defaultValue;
+
+        public Builder name(VariableName name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder defaultValue(Object defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        public VariableDefinition build() {
+            VariableDefinition vd = new VariableDefinition(name, type);
+            vd.setDefaultValue(defaultValue);
+            return vd;
+        }
+    }
 }
