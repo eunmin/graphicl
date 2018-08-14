@@ -21,6 +21,8 @@ public class GraphQLQueryTest {
                                 .field(GraphQLScalar.create("name"))
                                 .field(GraphQLScalar.create("appearsIn")))
                         .build());
+
+
     }
 
     @Test

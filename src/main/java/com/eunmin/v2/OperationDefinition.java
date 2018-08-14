@@ -1,0 +1,69 @@
+package com.eunmin.v2;
+
+import java.util.StringJoiner;
+
+public class OperationDefinition {
+    private OperationType type;
+    private String name;
+    private VariableDefinitions vars;
+    private Directives directives;
+    private SelectionSet selectionSet;
+
+    public OperationType getType() {
+        return type;
+    }
+
+    public void setType(OperationType type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public VariableDefinitions getVars() {
+        return vars;
+    }
+
+    public void setVars(VariableDefinitions vars) {
+        this.vars = vars;
+    }
+
+    public Directives getDirectives() {
+        return directives;
+    }
+
+    public void setDirectives(Directives directives) {
+        this.directives = directives;
+    }
+
+    public SelectionSet getSelectionSet() {
+        return selectionSet;
+    }
+
+    public void setSelectionSet(SelectionSet selectionSet) {
+        this.selectionSet = selectionSet;
+    }
+
+    public String toString() {
+        StringJoiner sj = new StringJoiner(" ");
+        if (type != null) {
+            sj.add(type.toString());
+        }
+        if (name != null) {
+            sj.add(name.toString());
+        }
+        if (vars != null) {
+            sj.add(vars.toString());
+        }
+        if (directives != null) {
+            sj.add(directives.toString());
+        }
+        sj.add(selectionSet.toString());
+        return sj.toString();
+    }
+}
