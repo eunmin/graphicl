@@ -14,15 +14,18 @@ public class OperationDefinitionTest {
 
     @Test
     public void testFields() {
+        Field.builder().field().name("a").end();
+
         Assert.assertEquals(
                 "query { hero { name appearsIn } }",
                 OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(Field.builder()
-                                .name("hero")
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("appearsIn").build())
-                                .build())
+                        .field().name("hero")
+                            .field().name("name")
+                            .end()
+                            .field().name("appearsIn")
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -32,12 +35,14 @@ public class OperationDefinitionTest {
                 "query { hero { name friends { name } } }",
                 OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("friends")
-                                        .select(Field.builder().name("name").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .field().name("name")
+                            .end()
+                            .field().name("friends")
+                                .field().name("name")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -47,11 +52,13 @@ public class OperationDefinitionTest {
                 "query { human (id: \"1000\") { name height } }",
                 OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(Field.builder().name("human")
-                                .arg("id", "1000")
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("height").build())
-                                .build())
+                        .field().name("human")
+                            .arg("id", "1000")
+                            .field().name("name")
+                            .end()
+                            .field().name("height")
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -61,13 +68,14 @@ public class OperationDefinitionTest {
                 "query { human (id: \"1000\") { name height (unit: FOOT) } }",
                 OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(Field.builder().name("human")
-                                .arg("id", "1000")
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("height")
-                                        .arg("unit", Unit.FOOT)
-                                        .build())
-                                .build())
+                        .field().name("human")
+                            .arg("id", "1000")
+                            .field().name("name")
+                            .end()
+                            .field().name("height")
+                                .arg("unit", Unit.FOOT)
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -77,16 +85,16 @@ public class OperationDefinitionTest {
                 "query { empireHero: hero (episode: EMPIRE) { name } jediHero: hero (episode: JEDI) { name } }",
                 OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .alias("empireHero")
-                                .arg("episode", Episode.EMPIRE)
-                                .select(Field.builder().name("name").build())
-                                .build())
-                        .select(Field.builder().name("hero")
-                                .alias("jediHero")
-                                .arg("episode", Episode.JEDI)
-                                .select(Field.builder().name("name").build())
-                                .build())
+                        .field().alias("empireHero").name("hero")
+                            .arg("episode", Episode.EMPIRE)
+                            .field().name("name")
+                            .end()
+                        .end()
+                        .field().alias("jediHero").name("hero")
+                            .arg("episode", Episode.JEDI)
+                            .field().name("name")
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -96,16 +104,16 @@ public class OperationDefinitionTest {
                 "query { leftComparison: hero (episode: EMPIRE) { ... comparisonFields } rightComparison: hero (episode: JEDI) { ... comparisonFields } }",
                 OperationDefinition.builder()
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .alias("leftComparison")
-                                .arg("episode", Episode.EMPIRE)
-                                .select(FragmentSpread.builder().name("comparisonFields").build())
-                                .build())
-                        .select(Field.builder().name("hero")
-                                .alias("rightComparison")
-                                .arg("episode", Episode.JEDI)
-                                .select(FragmentSpread.builder().name("comparisonFields").build())
-                                .build())
+                        .field().alias("leftComparison").name("hero")
+                            .arg("episode", Episode.EMPIRE)
+                            .fragmentSpread().name("comparisonFields")
+                            .end()
+                        .end()
+                        .field().alias("rightComparison").name("hero")
+                            .arg("episode", Episode.JEDI)
+                            .fragmentSpread().name("comparisonFields")
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -116,11 +124,14 @@ public class OperationDefinitionTest {
                 FragmentDefinition.builder()
                         .name("comparisonFields")
                         .on("Character")
-                        .select(Field.builder().name("name").build())
-                        .select(Field.builder().name("appearsIn").build())
-                        .select(Field.builder().name("friends")
-                                .select(Field.builder().name("name").build())
-                                .build())
+                        .field().name("name")
+                        .end()
+                        .field().name("appearsIn")
+                        .end()
+                        .field().name("friends")
+                            .field().name("name")
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -131,12 +142,14 @@ public class OperationDefinitionTest {
                 OperationDefinition.builder()
                         .name("HeroNameAndFriends")
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("friends")
-                                        .select(Field.builder().name("name").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .field().name("name")
+                            .end()
+                            .field().name("friends")
+                                .field().name("name")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -148,13 +161,15 @@ public class OperationDefinitionTest {
                         .name("HeroNameAndFriends")
                         .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .arg("episode", new VariableName("episode"))
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("friends")
-                                        .select(Field.builder().name("name").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .arg("episode", new VariableName("episode"))
+                            .field().name("name")
+                            .end()
+                            .field().name("friends")
+                                .field().name("name")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -166,13 +181,15 @@ public class OperationDefinitionTest {
                         .name("HeroNameAndFriends")
                         .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").defaultValue(Episode.JEDI).build())
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .arg("episode", new VariableName("episode"))
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("friends")
-                                        .select(Field.builder().name("name").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .arg("episode", new VariableName("episode"))
+                            .field().name("name")
+                            .end()
+                            .field().name("friends")
+                                .field().name("name")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -185,14 +202,16 @@ public class OperationDefinitionTest {
                         .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
                         .var(VariableDefinition.builder().name(new VariableName("withFriends")).type("Boolean!").build())
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .arg("episode", new VariableName("episode"))
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("friends")
-                                        .include(new VariableName("withFriends"))
-                                        .select(Field.builder().name("name").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .arg("episode", new VariableName("episode"))
+                            .field().name("name")
+                            .end()
+                            .field().name("friends")
+                                .include(new VariableName("withFriends"))
+                                .field().name("name")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -205,14 +224,16 @@ public class OperationDefinitionTest {
                         .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
                         .var(VariableDefinition.builder().name(new VariableName("withFriends")).type("Boolean!").build())
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .arg("episode", new VariableName("episode"))
-                                .select(Field.builder().name("name").build())
-                                .select(Field.builder().name("friends")
-                                        .skip(new VariableName("withFriends"))
-                                        .select(Field.builder().name("name").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .arg("episode", new VariableName("episode"))
+                            .field().name("name")
+                            .end()
+                            .field().name("friends")
+                                .skip(new VariableName("withFriends"))
+                                .field().name("name")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -225,12 +246,14 @@ public class OperationDefinitionTest {
                         .var(VariableDefinition.builder().name(new VariableName("ep")).type("Episode!").build())
                         .var(VariableDefinition.builder().name(new VariableName("review")).type("ReviewInput!").build())
                         .type(OperationType.Mutation)
-                        .select(Field.builder().name("createReview")
-                                .arg("episode", new VariableName("ep"))
-                                .arg("review", new VariableName("review"))
-                                .select(Field.builder().name("stars").build())
-                                .select(Field.builder().name("commentary").build())
-                                .build())
+                        .field().name("createReview")
+                            .arg("episode", new VariableName("ep"))
+                            .arg("review", new VariableName("review"))
+                            .field().name("stars")
+                            .end()
+                            .field().name("commentary")
+                            .end()
+                        .end()
                         .build().toString());
     }
 
@@ -242,16 +265,19 @@ public class OperationDefinitionTest {
                         .name("HeroForEpisode")
                         .var(VariableDefinition.builder().name(new VariableName("ep")).type("Episode!").build())
                         .type(OperationType.Query)
-                        .select(Field.builder().name("hero")
-                                .arg("episode", new VariableName("ep"))
-                                .select(Field.builder().name("name").build())
-                                .select(InlineFragment.builder().on("Droid")
-                                        .select(Field.builder().name("primaryFunction").build())
-                                        .build())
-                                .select(InlineFragment.builder().on("Human")
-                                        .select(Field.builder().name("height").build())
-                                        .build())
-                                .build())
+                        .field().name("hero")
+                            .arg("episode", new VariableName("ep"))
+                            .field().name("name")
+                            .end()
+                            .inlineFragment().on("Droid")
+                                .field().name("primaryFunction")
+                                .end()
+                            .end()
+                            .inlineFragment().on("Human")
+                                .field().name("height")
+                                .end()
+                            .end()
+                        .end()
                         .build().toString());
     }
 }

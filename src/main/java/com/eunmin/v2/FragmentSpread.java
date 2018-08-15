@@ -1,6 +1,7 @@
 package com.eunmin.v2;
 
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class FragmentSpread implements Selection {
     private String name;
@@ -41,16 +42,25 @@ public class FragmentSpread implements Selection {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder<T> {
         private String name;
         private Directives directives;
+        private T parentBuilder;
+        private Consumer<FragmentSpread> callback;
 
-        public Builder name(String name) {
+        public Builder() {}
+
+        public Builder<T> name(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder include(Object value) {
+        public Builder(T parentBuilder, Consumer<FragmentSpread> callback) {
+            this.parentBuilder = parentBuilder;
+            this.callback = callback;
+        }
+
+        public Builder<T> include(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -60,7 +70,7 @@ public class FragmentSpread implements Selection {
             return this;
         }
 
-        public Builder skip(Object value) {
+        public Builder<T> skip(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -68,6 +78,11 @@ public class FragmentSpread implements Selection {
             skipArgs.put("if", value);
             directives.put("skip", skipArgs);
             return this;
+        }
+
+        public T end() {
+            callback.accept(build());
+            return parentBuilder;
         }
 
         public FragmentSpread build() {

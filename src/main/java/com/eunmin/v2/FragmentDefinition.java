@@ -1,6 +1,7 @@
 package com.eunmin.v2;
 
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class FragmentDefinition {
     private String name;
@@ -97,6 +98,16 @@ public class FragmentDefinition {
             skipArgs.put("if", value);
             directives.put("skip", skipArgs);
             return this;
+        }
+
+        public Field.Builder<Builder> field() {
+            Consumer<Field> f = selection -> {
+                if (selectionSet == null) {
+                    selectionSet = new SelectionSet();
+                }
+                selectionSet.add(selection);
+            };
+            return new Field.Builder<>(this, f);
         }
 
         public Builder select(Selection selection) {

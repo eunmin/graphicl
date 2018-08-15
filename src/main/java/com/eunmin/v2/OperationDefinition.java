@@ -1,6 +1,7 @@
 package com.eunmin.v2;
 
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class OperationDefinition {
     private OperationType type;
@@ -96,7 +97,15 @@ public class OperationDefinition {
             return this;
         }
 
+        public Field.Builder<Builder> field() {
+            Consumer<Field> f = selection -> { selectionSet.add(selection); };
+            return new Field.Builder<>(this, f);
+        }
+
         public Builder select(Selection selection) {
+            if (selectionSet == null) {
+                selectionSet = new SelectionSet();
+            }
             selectionSet.add(selection);
             return this;
         }

@@ -1,6 +1,7 @@
 package com.eunmin.v2;
 
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class Field implements Selection {
     private String alias;
@@ -76,24 +77,33 @@ public class Field implements Selection {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder<T> {
         private String alias;
         private String name;
         private Arguments args;
         private Directives directives;
         private SelectionSet selectionSet;
+        private T parentBuilder;
+        private Consumer<Field> callback;
 
-        public Builder name(String name) {
+        public Builder() {}
+
+        public Builder(T parentBuilder, Consumer<Field> callback) {
+            this.parentBuilder = parentBuilder;
+            this.callback = callback;
+        }
+
+        public Builder<T> name(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder alias(String alias) {
+        public Builder<T> alias(String alias) {
             this.alias = alias;
             return this;
         }
 
-        public Builder arg(String name, Object value) {
+        public Builder<T> arg(String name, Object value) {
             if (args == null) {
                 args = new Arguments();
             }
@@ -101,7 +111,7 @@ public class Field implements Selection {
             return this;
         }
 
-        public Builder include(Object value) {
+        public Builder<T> include(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -111,7 +121,7 @@ public class Field implements Selection {
             return this;
         }
 
-        public Builder skip(Object value) {
+        public Builder<T> skip(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -121,12 +131,47 @@ public class Field implements Selection {
             return this;
         }
 
-        public Builder select(Selection selection) {
+        public Builder<Builder<T>> field() {
+            Consumer<Field> f = selection -> {
+                if (selectionSet == null) {
+                    selectionSet = new SelectionSet();
+                }
+                selectionSet.add(selection);
+            };
+            return new Builder<>(this, f);
+        }
+
+        public FragmentSpread.Builder<Builder<T>> fragmentSpread() {
+            Consumer<FragmentSpread> f = selection -> {
+                if (selectionSet == null) {
+                    selectionSet = new SelectionSet();
+                }
+                selectionSet.add(selection);
+            };
+            return new FragmentSpread.Builder<>(this, f);
+        }
+
+        public InlineFragment.Builder<Builder<T>> inlineFragment() {
+            Consumer<InlineFragment> f = selection -> {
+                if (selectionSet == null) {
+                    selectionSet = new SelectionSet();
+                }
+                selectionSet.add(selection);
+            };
+            return new InlineFragment.Builder<>(this, f);
+        }
+
+        public Builder<T> select(Selection selection) {
             if (selectionSet == null) {
                 selectionSet = new SelectionSet();
             }
             selectionSet.add(selection);
             return this;
+        }
+
+        public T end() {
+            callback.accept(build());
+            return parentBuilder;
         }
 
         public Field build() {

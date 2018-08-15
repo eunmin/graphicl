@@ -1,6 +1,7 @@
 package com.eunmin.v2;
 
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class InlineFragment implements Selection {
     private String type;
@@ -50,17 +51,26 @@ public class InlineFragment implements Selection {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder<T> {
         private String type;
         private Directives directives;
         private SelectionSet selectionSet;
+        private T parentBuilder;
+        private Consumer<InlineFragment> callback;
 
-        public Builder on(String type) {
+        public Builder() {}
+
+        public Builder(T parentBuilder, Consumer<InlineFragment> callback) {
+            this.parentBuilder = parentBuilder;
+            this.callback = callback;
+        }
+
+        public Builder<T> on(String type) {
             this.type = type;
             return this;
         }
 
-        public Builder include(Object value) {
+        public Builder<T> include(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -70,7 +80,7 @@ public class InlineFragment implements Selection {
             return this;
         }
 
-        public Builder skip(Object value) {
+        public Builder<T> skip(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -80,12 +90,27 @@ public class InlineFragment implements Selection {
             return this;
         }
 
-        public Builder select(Selection selection) {
+        public Builder<T> select(Selection selection) {
             if (selectionSet == null) {
                 selectionSet = new SelectionSet();
             }
             selectionSet.add(selection);
             return this;
+        }
+
+        public Field.Builder<Builder<T>> field() {
+            Consumer<Field> f = selection -> {
+                if (selectionSet == null) {
+                    selectionSet = new SelectionSet();
+                }
+                selectionSet.add(selection);
+            };
+            return new Field.Builder<>(this, f);
+        }
+
+        public T end() {
+            callback.accept(build());
+            return parentBuilder;
         }
 
         public InlineFragment build() {
