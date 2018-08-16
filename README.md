@@ -173,8 +173,7 @@ GraphQL.query()
   .end()
   .build();
 
-FragmentDefinition.builder()
-  .name("comparisonFields")
+GraphQL.fragmentDefinition("comparisonFields")
   .on("Character")
   .field("name")
   .end()

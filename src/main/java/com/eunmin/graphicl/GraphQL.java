@@ -28,4 +28,8 @@ public class GraphQL {
     public static VariableName var(String name) {
         return new VariableName(name);
     }
+
+    public static FragmentDefinition.Builder fragmentDefinition(String name) {
+        return FragmentDefinition.builder().name(name);
+    }
 }

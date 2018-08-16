@@ -113,8 +113,7 @@ public class GraphQLTest {
     public void testFragment() {
         Assert.assertEquals(
                 "fragment comparisonFields on Character { name appearsIn friends { name } }",
-                FragmentDefinition.builder()
-                        .name("comparisonFields")
+                GraphQL.fragmentDefinition("comparisonFields")
                         .on("Character")
                         .field("name")
                         .end()
