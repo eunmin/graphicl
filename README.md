@@ -28,7 +28,6 @@ GraphQL.query()
 {
   hero {
     name
-    # Queries can have comments!
     friends {
       name
     }
