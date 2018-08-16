@@ -5,7 +5,7 @@
 ### Fields
 
 ```graphql
-{
+query {
   hero {
     name
     appearsIn
@@ -25,7 +25,7 @@ GraphQL.query()
 ```
 
 ```graphql
-{
+query {
   hero {
     name
     friends {
@@ -51,7 +51,7 @@ GraphQL.query()
 ### Arguments
 
 ```graphql
-{
+query {
   human(id: "1000") {
     name
     height
@@ -72,7 +72,7 @@ GraphQL.query()
 ```
 
 ```graphql
-{
+query {
   human(id: "1000") {
     name
     height(unit: FOOT)
@@ -100,7 +100,7 @@ GraphQL.query()
 ### Aliases
 
 ```graphql
-{
+query {
   empireHero: hero(episode: EMPIRE) {
     name
   }
@@ -129,14 +129,10 @@ GraphQL.query()
   .build();            
 ```
 
-```java
-
-```
-
 ### Fragments
 
 ```graphql
-{
+query {
   leftComparison: hero(episode: EMPIRE) {
     ...comparisonFields
   }
