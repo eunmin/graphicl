@@ -232,7 +232,7 @@ query HeroNameAndFriends($episode: Episode) {
 
 ```java
 GraphQL.query("HeroNameAndFriends")
-  .var(VariableDefinition.builder().name(GraphQL.var("episode")).type("Episode").build())
+  .var(GraphQL.var("episode")).type("Episode")
   .field("hero")
       .arg("episode", GraphQL.var("episode"))
       .field("name")
@@ -263,7 +263,7 @@ query HeroNameAndFriends($episode: Episode = JEDI) {
 
 ```java
 GraphQL.query("HeroNameAndFriends")
-  .var(VariableDefinition.builder().name(GraphQL.var("episode")).type("Episode").defaultValue(Episode.JEDI).build())
+  .var(GraphQL.var("episode")).type("Episode").defaultValue(Episode.JEDI)
   .field("hero")
       .arg("episode", GraphQL.var("episode"))
       .field("name")
@@ -291,8 +291,10 @@ query Hero($episode: Episode, $withFriends: Boolean!) {
 
 ```java
 GraphQL.query("Hero")
-  .var(VariableDefinition.builder().name(GraphQL.var("episode")).type("Episode").build())
-  .var(VariableDefinition.builder().name(GraphQL.var("withFriends")).type("Boolean!").build())
+  .var(GraphQL.var("episode")).type("Episode")
+  .end()
+  .var(GraphQL.var("withFriends")).type("Boolean!")
+  .end()
   .field("hero")
       .arg("episode", GraphQL.var("episode"))
       .field("name")
@@ -319,8 +321,10 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
 
 ```java
 GraphQL.mutation("CreateReviewForEpisode")
-  .var(VariableDefinition.builder().name(GraphQL.var("ep")).type("Episode!").build())
-  .var(VariableDefinition.builder().name(GraphQL.var("review")).type("ReviewInput!").build())
+  .var(GraphQL.var("ep")).type("Episode!")
+  .end()
+  .var(GraphQL.var("review")).type("ReviewInput!")
+  .end()
   .field("createReview")
       .arg("episode", GraphQL.var("ep"))
       .arg("review", GraphQL.var("review"))
@@ -350,7 +354,8 @@ query HeroForEpisode($ep: Episode!) {
 
 ```java
 GraphQL.query("HeroForEpisode")
-    .var(VariableDefinition.builder().name(GraphQL.var("ep")).type("Episode!").build())
+    .var(GraphQL.var("ep")).type("Episode!")
+    .end()
     .field().name("hero")
         .arg("episode", GraphQL.var("ep"))
         .field("name")
