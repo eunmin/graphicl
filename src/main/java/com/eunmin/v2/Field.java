@@ -115,9 +115,7 @@ public class Field implements Selection {
             if (directives == null) {
                 directives = new Directives();
             }
-            Arguments includeArgs = new Arguments();
-            includeArgs.put("if", value);
-            directives.put("include", includeArgs);
+           directives.include(value);
             return this;
         }
 
@@ -125,9 +123,7 @@ public class Field implements Selection {
             if (directives == null) {
                 directives = new Directives();
             }
-            Arguments skipArgs = new Arguments();
-            skipArgs.put("if", value);
-            directives.put("skip", skipArgs);
+            directives.skip(value);
             return this;
         }
 
@@ -142,31 +138,21 @@ public class Field implements Selection {
         }
 
         public FragmentSpread.Builder<Builder<T>> fragmentSpread() {
-            Consumer<FragmentSpread> f = selection -> {
+            return new FragmentSpread.Builder<>(this, selection -> {
                 if (selectionSet == null) {
                     selectionSet = new SelectionSet();
                 }
                 selectionSet.add(selection);
-            };
-            return new FragmentSpread.Builder<>(this, f);
+            });
         }
 
         public InlineFragment.Builder<Builder<T>> inlineFragment() {
-            Consumer<InlineFragment> f = selection -> {
+            return new InlineFragment.Builder<>(this, selection -> {
                 if (selectionSet == null) {
                     selectionSet = new SelectionSet();
                 }
                 selectionSet.add(selection);
-            };
-            return new InlineFragment.Builder<>(this, f);
-        }
-
-        public Builder<T> select(Selection selection) {
-            if (selectionSet == null) {
-                selectionSet = new SelectionSet();
-            }
-            selectionSet.add(selection);
-            return this;
+            });
         }
 
         public T end() {

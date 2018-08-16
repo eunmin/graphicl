@@ -64,9 +64,7 @@ public class FragmentSpread implements Selection {
             if (directives == null) {
                 directives = new Directives();
             }
-            Arguments includeArgs = new Arguments();
-            includeArgs.put("if", value);
-            directives.put("include", includeArgs);
+            directives.include(value);
             return this;
         }
 
@@ -74,9 +72,7 @@ public class FragmentSpread implements Selection {
             if (directives == null) {
                 directives = new Directives();
             }
-            Arguments skipArgs = new Arguments();
-            skipArgs.put("if", value);
-            directives.put("skip", skipArgs);
+            directives.skip(value);
             return this;
         }
 

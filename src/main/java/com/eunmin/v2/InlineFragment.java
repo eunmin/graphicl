@@ -74,9 +74,7 @@ public class InlineFragment implements Selection {
             if (directives == null) {
                 directives = new Directives();
             }
-            Arguments includeArgs = new Arguments();
-            includeArgs.put("if", value);
-            directives.put("include", includeArgs);
+            directives.include(value);
             return this;
         }
 
@@ -84,28 +82,17 @@ public class InlineFragment implements Selection {
             if (directives == null) {
                 directives = new Directives();
             }
-            Arguments skipArgs = new Arguments();
-            skipArgs.put("if", value);
-            directives.put("skip", skipArgs);
-            return this;
-        }
-
-        public Builder<T> select(Selection selection) {
-            if (selectionSet == null) {
-                selectionSet = new SelectionSet();
-            }
-            selectionSet.add(selection);
+            directives.skip(value);
             return this;
         }
 
         public Field.Builder<Builder<T>> field() {
-            Consumer<Field> f = selection -> {
+            return new Field.Builder<>(this, selection -> {
                 if (selectionSet == null) {
                     selectionSet = new SelectionSet();
                 }
                 selectionSet.add(selection);
-            };
-            return new Field.Builder<>(this, f);
+            });
         }
 
         public T end() {

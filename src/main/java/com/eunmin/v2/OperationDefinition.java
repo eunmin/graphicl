@@ -98,16 +98,7 @@ public class OperationDefinition {
         }
 
         public Field.Builder<Builder> field() {
-            Consumer<Field> f = selection -> { selectionSet.add(selection); };
-            return new Field.Builder<>(this, f);
-        }
-
-        public Builder select(Selection selection) {
-            if (selectionSet == null) {
-                selectionSet = new SelectionSet();
-            }
-            selectionSet.add(selection);
-            return this;
+            return new Field.Builder<>(this, selection -> { selectionSet.add(selection); });
         }
 
         public OperationDefinition build() {
