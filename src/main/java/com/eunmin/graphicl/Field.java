@@ -141,13 +141,13 @@ public class Field implements Selection {
             return field().name(name);
         }
 
-        public FragmentSpread.Builder<Builder<T>> fragmentSpread() {
+        public FragmentSpread.Builder<Builder<T>> fragmentSpread(String name) {
             return new FragmentSpread.Builder<>(this, selection -> {
                 if (selectionSet == null) {
                     selectionSet = new SelectionSet();
                 }
                 selectionSet.add(selection);
-            });
+            }).name(name);
         }
 
         public InlineFragment.Builder<Builder<T>> inlineFragment() {
