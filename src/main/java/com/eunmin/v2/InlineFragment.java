@@ -95,6 +95,10 @@ public class InlineFragment implements Selection {
             });
         }
 
+        public Field.Builder<Builder<T>> field(String name) {
+            return field().name(name);
+        }
+
         public T end() {
             callback.accept(build());
             return parentBuilder;

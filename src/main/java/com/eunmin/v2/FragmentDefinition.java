@@ -105,6 +105,10 @@ public class FragmentDefinition {
             });
         }
 
+        public Field.Builder<Builder> field(String name) {
+            return field().name(name);
+        }
+
         public FragmentDefinition build() {
             FragmentDefinition fd = new FragmentDefinition(name, type);
             fd.setDirectives(directives);

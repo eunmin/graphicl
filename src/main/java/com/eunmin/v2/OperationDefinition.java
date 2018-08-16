@@ -101,6 +101,10 @@ public class OperationDefinition {
             return new Field.Builder<>(this, selection -> { selectionSet.add(selection); });
         }
 
+        public Field.Builder<Builder> field(String name) {
+            return field().name(name);
+        }
+
         public OperationDefinition build() {
             OperationDefinition operationDefinition = new OperationDefinition();
             operationDefinition.setType(type);

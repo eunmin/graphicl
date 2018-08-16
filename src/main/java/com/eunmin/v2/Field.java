@@ -137,6 +137,10 @@ public class Field implements Selection {
             return new Builder<>(this, f);
         }
 
+        public Builder<Builder<T>> field(String name) {
+            return field().name(name);
+        }
+
         public FragmentSpread.Builder<Builder<T>> fragmentSpread() {
             return new FragmentSpread.Builder<>(this, selection -> {
                 if (selectionSet == null) {
