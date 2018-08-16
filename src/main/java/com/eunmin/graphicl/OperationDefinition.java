@@ -1,7 +1,6 @@
-package com.eunmin.v2;
+package com.eunmin.graphicl;
 
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 
 public class OperationDefinition {
     private OperationType type;

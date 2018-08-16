@@ -1,4 +1,4 @@
-package com.eunmin.v2;
+package com.eunmin.graphicl;
 
 public enum OperationType {
     Query {

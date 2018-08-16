@@ -1,26 +1,12 @@
-package com.eunmin.v2;
+package com.eunmin.graphicl;
 
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
-public class FragmentDefinition {
-    private String name;
+public class InlineFragment implements Selection {
     private String type;
     private Directives directives;
     private SelectionSet selectionSet;
-
-    public FragmentDefinition(String name, String type) {
-        this.name = name;
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getType() {
         return type;
@@ -49,10 +35,11 @@ public class FragmentDefinition {
     @Override
     public String toString() {
         StringJoiner sj = new StringJoiner(" ");
-        sj.add("fragment");
-        sj.add(name);
-        sj.add("on");
-        sj.add(type);
+        sj.add("...");
+        if (type != null) {
+            sj.add("on");
+            sj.add(type);
+        }
         if (directives != null) {
             sj.add(directives.toString());
         }
@@ -64,23 +51,26 @@ public class FragmentDefinition {
         return new Builder();
     }
 
-    public static class Builder {
-        private String name;
+    public static class Builder<T> {
         private String type;
         private Directives directives;
         private SelectionSet selectionSet;
+        private T parentBuilder;
+        private Consumer<InlineFragment> callback;
 
-        public Builder name(String name) {
-            this.name = name;
-            return this;
+        public Builder() {}
+
+        public Builder(T parentBuilder, Consumer<InlineFragment> callback) {
+            this.parentBuilder = parentBuilder;
+            this.callback = callback;
         }
 
-        public Builder on(String type) {
+        public Builder<T> on(String type) {
             this.type = type;
             return this;
         }
 
-        public Builder include(Object value) {
+        public Builder<T> include(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -88,7 +78,7 @@ public class FragmentDefinition {
             return this;
         }
 
-        public Builder skip(Object value) {
+        public Builder<T> skip(Object value) {
             if (directives == null) {
                 directives = new Directives();
             }
@@ -96,7 +86,7 @@ public class FragmentDefinition {
             return this;
         }
 
-        public Field.Builder<Builder> field() {
+        public Field.Builder<Builder<T>> field() {
             return new Field.Builder<>(this, selection -> {
                 if (selectionSet == null) {
                     selectionSet = new SelectionSet();
@@ -105,15 +95,21 @@ public class FragmentDefinition {
             });
         }
 
-        public Field.Builder<Builder> field(String name) {
+        public Field.Builder<Builder<T>> field(String name) {
             return field().name(name);
         }
 
-        public FragmentDefinition build() {
-            FragmentDefinition fd = new FragmentDefinition(name, type);
-            fd.setDirectives(directives);
-            fd.setSelectionSet(selectionSet);
-            return fd;
+        public T end() {
+            callback.accept(build());
+            return parentBuilder;
+        }
+
+        public InlineFragment build() {
+            InlineFragment f = new InlineFragment();
+            f.setType(type);
+            f.setDirectives(directives);
+            f.setSelectionSet(selectionSet);
+            return f;
         }
     }
 }

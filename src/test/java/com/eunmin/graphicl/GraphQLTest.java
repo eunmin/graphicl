@@ -1,9 +1,9 @@
-package com.eunmin.v2;
+package com.eunmin.graphicl;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class OperationDefinitionTest {
+public class GraphQLTest {
     enum Unit {
         FOOT
     }

@@ -1,4 +1,4 @@
-package com.eunmin.v2;
+package com.eunmin.graphicl;
 
 public class GraphQL {
     public static OperationDefinition.Builder query() {
