@@ -1,5 +1,7 @@
 package com.eunmin.graphicl;
 
+import java.util.function.Consumer;
+
 public class VariableDefinition {
     private VariableName name;
     private String type;
@@ -47,24 +49,38 @@ public class VariableDefinition {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder<T> {
         private VariableName name;
         private String type;
         private Object defaultValue;
+        private T parentBuilder;
+        private Consumer<VariableDefinition> callback;
 
-        public Builder name(VariableName name) {
+        public Builder() {}
+
+        public Builder(T parentBuilder, Consumer<VariableDefinition> callback) {
+            this.parentBuilder = parentBuilder;
+            this.callback = callback;
+        }
+
+        public Builder<T> name(VariableName name) {
             this.name = name;
             return this;
         }
 
-        public Builder type(String type) {
+        public Builder<T> type(String type) {
             this.type = type;
             return this;
         }
 
-        public Builder defaultValue(Object defaultValue) {
+        public Builder<T> defaultValue(Object defaultValue) {
             this.defaultValue = defaultValue;
             return this;
+        }
+
+        public T end() {
+            callback.accept(build());
+            return parentBuilder;
         }
 
         public VariableDefinition build() {

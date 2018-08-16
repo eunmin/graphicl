@@ -24,4 +24,8 @@ public class GraphQL {
     public static OperationDefinition.Builder subscription(String name) {
         return OperationDefinition.builder().type(OperationType.Subscription).name(name);
     }
+
+    public static VariableName var(String name) {
+        return new VariableName(name);
+    }
 }

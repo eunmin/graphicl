@@ -232,9 +232,9 @@ query HeroNameAndFriends($episode: Episode) {
 
 ```java
 GraphQL.query("HeroNameAndFriends")
-  .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
+  .var(VariableDefinition.builder().name(GraphQL.var("episode")).type("Episode").build())
   .field("hero")
-      .arg("episode", new VariableName("episode"))
+      .arg("episode", GraphQL.var("episode"))
       .field("name")
       .end()
       .field("friends")
@@ -263,9 +263,9 @@ query HeroNameAndFriends($episode: Episode = JEDI) {
 
 ```java
 GraphQL.query("HeroNameAndFriends")
-  .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").defaultValue(Episode.JEDI).build())
+  .var(VariableDefinition.builder().name(GraphQL.var("episode")).type("Episode").defaultValue(Episode.JEDI).build())
   .field("hero")
-      .arg("episode", new VariableName("episode"))
+      .arg("episode", GraphQL.var("episode"))
       .field("name")
       .end()
       .field("friends")
@@ -291,14 +291,14 @@ query Hero($episode: Episode, $withFriends: Boolean!) {
 
 ```java
 GraphQL.query("Hero")
-  .var(VariableDefinition.builder().name(new VariableName("episode")).type("Episode").build())
-  .var(VariableDefinition.builder().name(new VariableName("withFriends")).type("Boolean!").build())
+  .var(VariableDefinition.builder().name(GraphQL.var("episode")).type("Episode").build())
+  .var(VariableDefinition.builder().name(GraphQL.var("withFriends")).type("Boolean!").build())
   .field("hero")
-      .arg("episode", new VariableName("episode"))
+      .arg("episode", GraphQL.var("episode"))
       .field("name")
       .end()
       .field("friends")
-          .include(new VariableName("withFriends"))
+          .include(GraphQL.var("withFriends"))
           .field("name")
           .end()
       .end()
@@ -319,11 +319,11 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
 
 ```java
 GraphQL.mutation("CreateReviewForEpisode")
-  .var(VariableDefinition.builder().name(new VariableName("ep")).type("Episode!").build())
-  .var(VariableDefinition.builder().name(new VariableName("review")).type("ReviewInput!").build())
+  .var(VariableDefinition.builder().name(GraphQL.var("ep")).type("Episode!").build())
+  .var(VariableDefinition.builder().name(GraphQL.var("review")).type("ReviewInput!").build())
   .field("createReview")
-      .arg("episode", new VariableName("ep"))
-      .arg("review", new VariableName("review"))
+      .arg("episode", GraphQL.var("ep"))
+      .arg("review", GraphQL.var("review"))
       .field("stars")
       .end()
       .field("commentary")
@@ -350,9 +350,9 @@ query HeroForEpisode($ep: Episode!) {
 
 ```java
 GraphQL.query("HeroForEpisode")
-    .var(VariableDefinition.builder().name(new VariableName("ep")).type("Episode!").build())
+    .var(VariableDefinition.builder().name(GraphQL.var("ep")).type("Episode!").build())
     .field().name("hero")
-        .arg("episode", new VariableName("ep"))
+        .arg("episode", GraphQL.var("ep"))
         .field("name")
         .end()
         .inlineFragment().on("Droid")

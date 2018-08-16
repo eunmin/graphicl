@@ -96,6 +96,15 @@ public class OperationDefinition {
             return this;
         }
 
+        public VariableDefinition.Builder<Builder> var(VariableName name) {
+            return new VariableDefinition.Builder<>(this, var -> {
+                if (vars == null) {
+                    vars = new VariableDefinitions();
+                }
+                vars.add(var);
+            }).name(name);
+        }
+
         public Field.Builder<Builder> field() {
             return new Field.Builder<>(this, selection -> { selectionSet.add(selection); });
         }
