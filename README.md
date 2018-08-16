@@ -61,8 +61,7 @@ query {
 
 ```java
 GraphQL.query()
-  .field("human")
-      .arg("id", "1000")
+  .field("human").arg("id", "1000")
       .field("name")
       .end()
       .field("height")
@@ -86,12 +85,10 @@ enum Unit {
 }
 
 GraphQL.query()
-  .field("human")
-      .arg("id", "1000")
+  .field("human").arg("id", "1000")
       .field("name")
       .end()
-      .field("height")
-          .arg("unit", Unit.FOOT)
+      .field("height").arg("unit", Unit.FOOT)
       .end()
   .end()
   .build();
@@ -116,13 +113,11 @@ enum Episode {
 }
 
 GraphQL.query()
-  .field("hero").alias("empireHero")
-      .arg("episode", Episode.EMPIRE)
+  .field("hero").alias("empireHero").arg("episode", Episode.EMPIRE)
       .field("name")
       .end()
   .end()
-  .field("hero").alias("jediHero")
-      .arg("episode", Episode.JEDI)
+  .field("hero").alias("jediHero").arg("episode", Episode.JEDI)
       .field("name")
       .end()
   .end()
@@ -156,20 +151,17 @@ enum Episode {
 }
 
 GraphQL.query()
-  .field("hero").alias("leftComparison")
-      .arg("episode", Episode.EMPIRE)
+  .field("hero").alias("leftComparison").arg("episode", Episode.EMPIRE)
       .fragmentSpread("comparisonFields")
       .end()
   .end()
-  .field("hero").alias("rightComparison")
-      .arg("episode", Episode.JEDI)
+  .field("hero").alias("rightComparison").arg("episode", Episode.JEDI)
       .fragmentSpread("comparisonFields")
       .end()
   .end()
   .build();
 
-GraphQL.fragmentDefinition("comparisonFields")
-  .on("Character")
+GraphQL.fragmentDefinition("comparisonFields").on("Character")
   .field("name")
   .end()
   .field("appearsIn")
@@ -227,8 +219,8 @@ query HeroNameAndFriends($episode: Episode) {
 ```java
 GraphQL.query("HeroNameAndFriends")
   .var(GraphQL.var("episode")).type("Episode")
-  .field("hero")
-      .arg("episode", GraphQL.var("episode"))
+  .end()
+  .field("hero").arg("episode", GraphQL.var("episode"))
       .field("name")
       .end()
       .field("friends")
@@ -237,9 +229,6 @@ GraphQL.query("HeroNameAndFriends")
       .end()
   .end()
   .build());                            
-
-Map variables = new HashMap<String, Object>();
-variables.put("episode", "JEDI")
 ```
 
 #### Default variables
@@ -258,8 +247,8 @@ query HeroNameAndFriends($episode: Episode = JEDI) {
 ```java
 GraphQL.query("HeroNameAndFriends")
   .var(GraphQL.var("episode")).type("Episode").defaultValue(Episode.JEDI)
-  .field("hero")
-      .arg("episode", GraphQL.var("episode"))
+  .end()
+  .field("hero").arg("episode", GraphQL.var("episode"))
       .field("name")
       .end()
       .field("friends")
@@ -289,12 +278,10 @@ GraphQL.query("Hero")
   .end()
   .var(GraphQL.var("withFriends")).type("Boolean!")
   .end()
-  .field("hero")
-      .arg("episode", GraphQL.var("episode"))
+  .field("hero").arg("episode", GraphQL.var("episode"))
       .field("name")
       .end()
-      .field("friends")
-          .include(GraphQL.var("withFriends"))
+      .field("friends").include(GraphQL.var("withFriends"))
           .field("name")
           .end()
       .end()
@@ -319,9 +306,7 @@ GraphQL.mutation("CreateReviewForEpisode")
   .end()
   .var(GraphQL.var("review")).type("ReviewInput!")
   .end()
-  .field("createReview")
-      .arg("episode", GraphQL.var("ep"))
-      .arg("review", GraphQL.var("review"))
+  .field("createReview").arg("episode", GraphQL.var("ep")).arg("review", GraphQL.var("review"))
       .field("stars")
       .end()
       .field("commentary")
@@ -350,8 +335,7 @@ query HeroForEpisode($ep: Episode!) {
 GraphQL.query("HeroForEpisode")
     .var(GraphQL.var("ep")).type("Episode!")
     .end()
-    .field().name("hero")
-        .arg("episode", GraphQL.var("ep"))
+    .field().name("hero").arg("episode", GraphQL.var("ep"))
         .field("name")
         .end()
         .inlineFragment().on("Droid")
