@@ -24,6 +24,21 @@ GraphQL.query()
   .build();
 ```
 
+```java
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  String appearsIn;
+}
+
+@GraphQLQuery
+class Query {
+  @GraphQLField
+  Hero hero;
+}
+```
+
 ```graphql
 query {
   hero {
@@ -48,6 +63,26 @@ GraphQL.query()
   .build();
 ```
 
+```java
+class Friend {
+  @GraphQLField
+  String name;
+}
+
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  List<Firend> friends;
+}
+
+@GraphQLQuery
+class Query {
+  @GraphQLField
+  Hero hero;
+}
+```
+
 ### Arguments
 
 ```graphql
@@ -68,6 +103,21 @@ GraphQL.query()
       .end()
   .end()
   .build();
+```
+
+```java
+class Human {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  Integer height;
+}
+
+@GraphQLQuery
+class Query {
+  @GraphQLField(args = { @GraphQLArg(name = "id", value = "1000") })
+  Human human;
+}
 ```
 
 ```graphql
@@ -92,6 +142,21 @@ GraphQL.query()
       .end()
   .end()
   .build();
+```
+
+```java
+class Human {
+  @GraphQLField
+  String name;
+  @GraphQLField(args = { @GraphQLArg(name = "unit", value = Unit.FOOT) })
+  Integer height;
+}
+
+@GraphQLQuery
+class Query {
+  @GraphQLField(args = { @GraphQLArg(name = "id", value = "1000") })
+  Human human;
+}
 ```
 
 ### Aliases
@@ -122,6 +187,22 @@ GraphQL.query()
       .end()
   .end()
   .build();            
+```
+
+```java
+class Hero {
+  @GraphQLField
+  String name;
+}
+
+@GraphQLQuery
+class Query {
+  @GraphQLField(name = "hero", args = { @GraphQLArg(name = "episode", value = Episode.EMPIRE) })
+  Hero empireHero;
+
+  @GraphQLField(name = "hero", args = { @GraphQLArg(name = "episode", value = Episode.JEDI) })  
+  Hero jediHero;
+}
 ```
 
 ### Fragments
@@ -173,6 +254,52 @@ GraphQL.fragmentDefinition("comparisonFields").on("Character")
   .build();
 ```
 
+#### Not support yet ...
+
+```java
+class Friend {
+  @GraphQLField
+  String name;
+}
+
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  String appearsIn;
+  @GraphQLField
+  List<Friend> friends;
+}
+
+@GraphQLQuery
+class Query {
+  @GraphQLField(name = "hero", args = { @GraphQLArg(name = "episode", value = Episode.EMPIRE) })
+  Hero leftComparison;
+
+  @GraphQLField(name = "hero", args = { @GraphQLArg(name = "episode", value = Episode.JEDI) })  
+  Hero rightComparison;
+}
+```
+
+```graphql
+query {
+  leftComparison: hero(episode: EMPIRE) {
+    name
+    appearsIn
+    friends {
+      name
+    }
+  }
+  rightComparison: hero(episode: JEDI) {
+    name
+    appearsIn
+    friends {
+      name
+    }
+  }
+}
+```
+
 ### Operation name
 
 ```graphql
@@ -197,6 +324,26 @@ GraphQL.query("HeroNameAndFriends")
       .end()
   .end()
   .build());                          
+```
+
+```java
+class Friend {
+  @GraphQLField
+  String name;
+}
+
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  List<Firend> friends;
+}
+
+@GraphQLQuery("HeroNameAndFriends")
+class Query {
+  @GraphQLField
+  Hero hero;
+}
 ```
 
 ### Variables
@@ -231,6 +378,27 @@ GraphQL.query("HeroNameAndFriends")
   .build());                            
 ```
 
+```java
+class Friend {
+  @GraphQLField
+  String name;
+}
+
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  List<Firend> friends;
+}
+
+@GraphQLQuery(name = "HeroNameAndFriends",
+              vars = { @GraphQLVar(var = GraphQL.var("episode"), type = "Episode") })
+class Query {
+  @GraphQLField(args = { @GraphQLArg(name = "episode", value = GraphQL.var("episode")) })
+  Hero hero;
+}
+```
+
 #### Default variables
 
 ```graphql
@@ -257,6 +425,27 @@ GraphQL.query("HeroNameAndFriends")
       .end()
   .end()
   .build());                            
+```
+
+```java
+class Friend {
+  @GraphQLField
+  String name;
+}
+
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField
+  List<Firend> friends;
+}
+
+@GraphQLQuery(name = "HeroNameAndFriends",
+              vars = { @GraphQLVar(var = GraphQL.var("episode"), type = "Episode", defaultValue = Episode.JEDI) })
+class Query {
+  @GraphQLField(args = { @GraphQLArg(name = "episode", value = GraphQL.var("episode")) })
+  Hero hero;
+}
 ```
 
 ### Directives
@@ -289,6 +478,28 @@ GraphQL.query("Hero")
   .build());                           
 ```
 
+```java
+class Friend {
+  @GraphQLField
+  String name;
+}
+
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLField(include = GraphQL.var("withFriends"))
+  List<Friend> friends;
+}
+
+@GraphQLQuery(name = "Hero",
+              vars = {@GraphQLVar(var = GraphQL.var("episode"), type = "Episode"),
+                      @GraphQLVar(var = GraphQL.var("withFriends"), type = "Boolean!")})
+class Query {
+  @GraphQLField(args = { @GraphQLArg(name = "episode", value = GraphQL.var("episode")) })
+  Hero hero;
+}
+```
+
 ### Mutations
 
 ```graphql
@@ -313,6 +524,24 @@ GraphQL.mutation("CreateReviewForEpisode")
       .end()
   .end()
   .build());      
+```
+
+```java
+class CreateReview {
+  @GraphQLField
+  Integer stars;
+  @GraphQLField
+  String commentary;
+}
+
+@GraphQLMutation(name = "CreateReviewForEpisode",
+                 vars = {@GraphQLVar(var = GraphQL.var("ep"), type = "Episode!"),
+                         @GraphQLVar(var = GraphQL.var("review"), type = "ReviewInput!")})
+class Mutation {
+  @GraphQLField(args = { @GraphQLArg(name = "episode", value = GraphQL.var("ep")),
+                         @GraphQLArg(name = "review", value = GraphQL.var("review"))})
+  CreateReview createReview;
+}
 ```
 
 ### Inline Fragments
@@ -348,4 +577,22 @@ GraphQL.query("HeroForEpisode")
         .end()
     .end()
     .build());
+```
+
+```java
+class Hero {
+  @GraphQLField
+  String name;
+  @GraphQLInlineFragment(on = "Droid")
+  String primaryFunction;
+  @GraphQLInlineFragment(on = "Human")
+  Integer height;
+}
+
+@GraphQLQuery(name = "HeroForEpisode",
+              vars = {@GraphQLVar(var = GraphQL.var("ep"), type = "Episode!")})
+class Query {
+  @GraphQLField(@GraphQLArg(name = "episode", value = GraphQL.var("ep")))
+  Hero hero;
+}
 ```
