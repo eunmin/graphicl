@@ -4,16 +4,7 @@ import com.eunmin.graphicl.annotator.GraphQLQueryAnnotator;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class GraphQLAnnotatorTest {
-    enum Unit {
-        FOOT
-    }
-
-    enum Episode {
-        EMPIRE, JEDI
-    }
-
-    @GraphQLQuery
+public class FieldTest {
     class Hero {
         @GraphQLField
         String name;
@@ -22,15 +13,15 @@ public class GraphQLAnnotatorTest {
     }
 
     @GraphQLQuery
-    class QueryTestField {
+    class Query {
         @GraphQLField
         Hero hero;
     }
 
     @Test
-    public void testField() {
+    public void test() {
         Assert.assertEquals(
                 "query { hero { name appearsIn } }",
-                GraphQLQueryAnnotator.toGraphQL(QueryTestField.class).toString());
+                GraphQLQueryAnnotator.toGraphQL(Query.class).toString());
     }
 }
